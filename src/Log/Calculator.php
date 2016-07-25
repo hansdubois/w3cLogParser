@@ -105,31 +105,116 @@ class Calculator
      */
     private function getMainSectionOfUri(Entry $entry) {
         $uri = $entry->getUri();
+        $uri = rtrim($uri, '/');
 
-        var_dump(parse_url($entry->getUri()));
-        
-        if (stristr($uri, 'customers') && stristr($uri, 'orders') && !stristr($uri, 'simcustomers')) {
-            return 'customer-orders';
+        if (preg_match('/^\/customers\/\d+\/orders\/\d+$/', $uri)) {
+          return 'customer-order (' . $entry->getMethod() . ')';
         }
 
-        if (stristr($uri, 'customers') && $entry->getMethod() === "HEAD" && !stristr($uri, 'simcustomers')) {
-            return 'customer-exists';
+        if (preg_match('/^\/customers\/\d+\/orders$/', $uri)) {
+          return 'customer-orders (' . $entry->getMethod() . ')';
         }
 
-        if (stristr($uri, 'customers') && $entry->getMethod() === "POST") {
-            return 'customer-create';
+        if (preg_match('/^\/customers\/\d+$/', $uri)) {
+          return 'customer (' . $entry->getMethod() . ')';
         }
 
-        if (stristr($uri, 'activemails')) {
-            return 'activemailer';
+        if (preg_match('/^\/customers$/', $uri)) {
+          return 'customers (' . $entry->getMethod() . ')';
         }
 
-        $uri = ltrim($uri, "/");
-
-        if (strpos($uri, "/") > 0 ) {
-            return substr($uri, 0, strpos($uri, "/")) . $entry->getMethod();
+        if (preg_match('/^\/customers\/\d+\/activemails$/', $uri)) {
+          return 'c-activemails (' . $entry->getMethod() . ')';
         }
 
-        return $uri;
+        if (preg_match('/^\/customers\/\d+\/activemails\/\d+$/', $uri)) {
+          return 'c-activemail (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/customers\/\d+\/complaints$/', $uri)) {
+          return 'customer-complaints (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/customers\/\d+\/invoice\/\d+$/', $uri)) {
+          return 'customer-invoice (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/customers\/\d+\/credentials$/', $uri)) {
+          return 'customer-credentials (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/customers\/\d+\/alias\/.*$/', $uri)) {
+          return 'customer-alias (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/simcustomers\/.+$/', $uri)) {
+          return 'sim-customer (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/simcustomers$/', $uri)) {
+          return 'sim-customers (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/timeslot\/\d+\/\d+\/\d+$/', $uri)) {
+          return 'timeslot (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/token$/', $uri)) {
+          return 'token (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/activemails$/', $uri)) {
+          return 'activemails (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/transactions\/\d+$/', $uri)) {
+          return 'transactions (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/orders$/', $uri)) {
+          return 'orders (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/health$/', $uri)) {
+          return 'health (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/password$/', $uri)) {
+          return 'password (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/dropoff\/\d+\/locations$/', $uri)) {
+          return 'dropoff-locations (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/dropoff\/\d+\/locations\/.+$/', $uri)) {
+          return 'dropoff-locations-postal (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/voucher\/.+$/', $uri)) {
+          return 'voucher (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/credentials/', $uri)) {
+          return 'credentials (' . $entry->getMethod() . ')';
+        }
+
+        if (preg_match('/^\/invitetopay\/.+$/', $uri)) {
+          return 'invitetopay (' . $entry->getMethod() . ')';
+        }
+
+        if ($uri === '') {
+          return '/ (' . $entry->getMethod() . ')';
+        }
+
+        if ($uri === 'cs-method') {
+          return 'cs-method (' . $entry->getMethod() . ')';
+        }
+
+        if ($uri === '/iisconfig') {
+          return 'iisconfig (' . $entry->getMethod() . ')';
+        }
+
+        return 'other';
     }
 }
